@@ -322,7 +322,7 @@ public class StudentMarksDetailsController {
 			for (StudentMarksDetails studentMarksDetails : studentMarksDetailsList) {
 				sum += studentMarksDetails.getMarks();
 			}
-			return ResponseEntity.ok(String.valueOf(sum/studentMarksDetailsList.size()));
+			return ResponseEntity.ok("Average : " + String.valueOf(sum/studentMarksDetailsList.size()));
 		} catch (Exception e) {
 			// TODO: handle exception
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -358,7 +358,7 @@ public class StudentMarksDetailsController {
 			for (StudentMarksDetails studentMarksDetails : studentMarksDetailsList) {
 				sum += studentMarksDetails.getMarks();
 			}
-			return ResponseEntity.ok(String.valueOf(sum/studentMarksDetailsList.size()));
+			return ResponseEntity.ok("Average : " + String.valueOf(sum/studentMarksDetailsList.size()));
 		} catch (Exception e) {
 			// TODO: handle exception
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
