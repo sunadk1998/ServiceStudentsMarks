@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.aad.msal4j.PublicClientApplication;
 import com.studentAcadamicService.studentDetails.Entity.StudentMarksDetails;
 import com.studentAcadamicService.studentDetails.Entity.SubjectDetails;
 import com.studentAcadamicService.studentDetails.model.AddStudentMarksRequest;
@@ -366,6 +368,39 @@ public class StudentMarksDetailsController {
 		
 	}
 	
+	@DeleteMapping("/{studentId}")
+	public ResponseEntity<String> deleteByStudentId(@RequestHeader(value = "Authorization", required = true) String value, @RequestHeader(value = "api-key", required = true) String apiKey, @PathVariable(name = "studentId") Long studentId) {
+		
+		try {
+			if (!VALID_API_KEY.equals(apiKey)) {
+	            throw new Exception("Invalid API key");
+	        }
+			
+			if (Objects.nonNull(studentId)) {
+				String studentIdVal = getStudentId(studentId, value);
+				
+				if (Objects.isNull(studentIdVal)) {
+					throw new Exception("Student Details not found");
+				}
+			} else {
+				throw new Exception("Student ID not found");
+			}
+			
+			List<StudentMarksDetails> studentMarksDetailsList = studentMarksDetailsRepository.findByStudentId(studentId);
+			if (Objects.isNull(studentMarksDetailsList) || studentMarksDetailsList.isEmpty()) {
+				throw new Exception("Student Marks Details not found");
+			}
+			
+			studentMarksDetailsRepository.deleteAll(studentMarksDetailsList);
+			return ResponseEntity.ok("All Records of Student ID : " + studentId + " are deleted!!!");
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+		
+	}
 	
 
 }
